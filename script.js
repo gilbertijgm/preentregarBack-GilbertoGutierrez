@@ -1,33 +1,62 @@
+class Product {
+    constructor(title, description, price, thumbnail, code, stock) {
+        this.id = null; // Se establecerá en ProductManager al agregar el producto
+        this.title = title;
+        this.description = description;
+        this.price = price;
+        this.thumbnail = thumbnail;
+        this.code = code;
+        this.stock = stock;
+    }
+}
+
 class ProductManager {
     constructor() {
         this.products = [];
+        this.currentId = 1; // Para autoincrementar el ID del producto
     }
 
-    agregarProducto(titulo, descripcion, precio, rutaImagen, codigoIdentificador, stock) {
-        const producto = {
-            titulo: titulo,
-            descripcion: descripcion,
-            precio: precio,
-            rutaImagen: rutaImagen,
-            codigoIdentificador: codigoIdentificador,
-            stock: stock
-        };
-        this.products.push(producto);
+    addProduct(title, description, price, thumbnail, code, stock) {
+        // Validar que todos los campos sean proporcionados
+        if (!title || !description || !price || !thumbnail || !code || !stock) {
+            console.error("Todos los campos son obligatorios.");
+            return;
+        }
+
+        // Validar que el código no se repita
+        const productExists = this.products.some(product => product.code === code);
+        if (productExists) {
+            console.error("El código del producto ya existe.");
+            return;
+        }
+
+        const product = new Product(title, description, price, thumbnail, code, stock);
+        product.id = this.currentId++;
+        this.products.push(product);
     }
 
-    getProductos() {
+    getProducts() {
         return this.products;
     }
 
-    getProductoById(codigoIdentificador) {
-        return this.products.find(product => product.codigoIdentificador === codigoIdentificador);
+    getProductById(id) {
+        const product = this.products.find(product => product.id === id);
+        if (!product) {
+            console.error("No encontrado.");
+            return;
+        }
+        return product;
     }
 }
 
 // Ejemplo de uso:
 const manager = new ProductManager();
-manager.agregarProducto("Producto A", "Descripción A", 100, "rutaA.jpg", 1, 50);
-manager.agregarProducto("Producto B", "Descripción B", 150, "rutaB.jpg", 2, 40);
+manager.addProduct("Laptop", "Gaming laptop", 120000, "lapto.jpg", "ABC123", 10);
+manager.addProduct("Phone", "Latest model", 70000, "phone.jpg", "XYZ789", 20);
 
-console.log(manager.getProductos()); // Mostrará todos los productos
-console.log(manager.getProductoById(1)); // Mostrará el producto con código identificador 1
+console.log(manager.getProducts()); // Muestra la lista de productos
+
+const product = manager.getProductById(2);
+console.log(product); // Muestra el producto con id 1
+
+const missingProduct = manager.getProductById(6); // Muestra "No encontrado" en la consola
