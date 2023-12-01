@@ -7,13 +7,31 @@ const prodDao = new ProductDaoMongoDB();
 //     __dirname + "/daos/filesystem/data/products.json"
 // );
 
-export const getAll = async () => {
+export const aggregation1 = async(category ) => {
     try {
-        return await prodDao.getAll();
+        return await prodDao.aggregation1(category);
     } catch (error) {
         console.log(error);
     }
 }
+
+export const getAll = async (page, limit) => {
+    try {
+        return await prodDao.getAll(page, limit);
+    } catch (error) {
+        console.log(error);
+    }
+}
+
+export const getByCodeProduct = async (code) => {
+    try {
+      const item = await prodDao.getProductByCode(code);
+      if (!item) return false;
+      else return item;
+    } catch (error) {
+      console.log(error);
+    }
+  };
 
 export const getById = async (id) => {
     try {

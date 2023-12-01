@@ -1,9 +1,49 @@
 import * as service from '../services/product.services.js';
 
+
+export const aggregation1 = async(req,res,next) => {
+    try {
+        const { category, orderPrice} = req.query;
+        const response = await service.aggregation1(category);
+        res.json(response);
+    } catch (error) {
+        next(error);
+    }
+}
+
+export const getByCode = async (req, res, next) => {
+    try {
+      const { code } = req.query;
+      const item = await service.getByCodeProduct(code);
+      if (!item) throw new Error("User not found!");
+      res.json(item);
+    } catch (error) {
+      next(error);
+    }
+  };
+
 export const getAll = async (req,res,next) => {
     try {
-        const response = await service.getAll();
-        res.status(200).json(response);
+        const {page,limit} = req.query;
+        const response = await service.getAll(page, limit);
+        //res.status(200).json(response);
+        const nextLink = response.hasNextPage ? `http://localhost:8080/api/products?page=${response.nextPage}` : null;
+        const prevLink = response.hasPrevPage ? `http://localhost:8080/api/products?page=${response.prevPage}` : null;
+        const nextPage = response.hasNextPage ? `${response.nextPage}` : null;
+        const prevPage = response.hasPrevPage ? `${response.prevPage}` : null;
+        
+        res.json({
+            payload: response.docs,
+            info: {
+                //totalDocs: response.totalDocs,
+                totalPages: response.totalPages,
+                prevPage,
+                nextPage,
+                page: response.page,
+                prevLink,
+                nextLink
+            }
+        })
     } catch (error) {
         next(error.message);
     }

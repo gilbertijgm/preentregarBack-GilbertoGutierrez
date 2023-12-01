@@ -3,6 +3,10 @@ import * as controller from "../controllers/products.controllers.js";
 
 const router = Router();
 
+router.get('/aggregation', controller.aggregation1);
+
+router.get('/query', controller.getByCode);
+
 router.get('/', controller.getAll);
 
 router.get('/:id', controller.getById);

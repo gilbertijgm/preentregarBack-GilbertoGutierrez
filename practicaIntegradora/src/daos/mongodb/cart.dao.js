@@ -11,7 +11,7 @@ export class CartDaoMongoDB {
         }
     }
 
-    async getById(id) {
+    async getCartById(id) {
         try {
             const response = await CartModel.findById(id);
             return response;

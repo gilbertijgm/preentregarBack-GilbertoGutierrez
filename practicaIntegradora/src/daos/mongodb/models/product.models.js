@@ -1,4 +1,5 @@
 import mongoose from "mongoose";
+import mongoosePaginate from "mongoose-paginate-v2";
 
 export const productsCollectionName = "products";
 
@@ -17,6 +18,8 @@ const productsShema = new mongoose.Schema({
     //     default: [] //aqui indico que inicialmente va a estar vacio
     // }]
 });
+
+productsShema.plugin(mongoosePaginate);
 
 export const ProductModel = mongoose.model(
     productsCollectionName,
